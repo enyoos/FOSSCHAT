@@ -1,41 +1,43 @@
 import { useEffect, useState } from "react"
-import { socket } from "../socket";
+import { EVENTS, socket } from "../socket";
 import { useSearchParams } from "react-router-dom";
+import ChatLog from "./ChatLog";
 
-export default function ChatRoom ( {username, navigate, setMessages} )
+export default function ChatRoom ( {messages, username, navigate, setMessages, id, setId} )
 {
+    const [connected, setConnected] = useState( false );
     const [value, setValue] = useState("");
 
     function handleClick( )
     {
-        setMessages( messages => [...messages, value.trim()])
+        let newId = id ++;
+        setId ( newId);
 
-        // emit the SEND_MSG event.
-        // socket.emit(  )
+        let msg = value.trim();
+
+        setValue ( "" );
+
+        setMessages( message => [...message, msg])
+        socket.emit( EVENTS["SEND_MESSAGE"] , msg);
     }
 
     useEffect( () => {
         socket.connect();
-        // socket.on('connect', onConnect);
-        // socket.on('disconnect', onDisconnect);
-        // socket.on('foo', onFooEvent);
-
-        // return () => {
-        //     socket.off('connect', onConnect);
-        //     socket.off('disconnect', onDisconnect);
-        //     socket.off('foo', onFooEvent);
-        // }
+        return setConnected( true );
     }, []);
 
     return ( 
         <>
+            {connected ? <span> you're now connected </span> : <span> Connecting ...  </span> }
             <h1>
                 Welcome, {username}
             </h1>
-            <input type="text" onChange={e => setValue(e.target.value)} placeholder="What do you want to say"/>
+            <input value={value} type="text" onChange={e => setValue(e.target.value)} placeholder="What do you want to say"/>
             <button onClick={handleClick}>
                 OK
             </button>
+
+            <ChatLog messages={messages} setMessages={setMessages} id={id} setId={setId} />
         </>
     )
 }

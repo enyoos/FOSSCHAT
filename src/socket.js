@@ -1,7 +1,8 @@
 import { io } from 'socket.io-client';
 
-const EVENTS = {
-    SEND_MESSAGE : "SEND_MSG",
+export const EVENTS = {
+    "SEND_MESSAGE" : "SEND_MSG",
+    "DELETE_MESSAGE" : "DEL_MSG",
 }
 
 
