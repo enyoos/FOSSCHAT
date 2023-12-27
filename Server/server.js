@@ -1,8 +1,10 @@
 import { Server } from "socket.io";
 
-const URL = "http://localhost:3001";
+const URL = "http://localhost:3000";
 const PORT = 4000;
-
+const EVENTS = {
+    SEND_MESSAGE : "SEND_MSG",
+}
 const io = new Server({
   cors: {
     origin: URL
@@ -10,10 +12,10 @@ const io = new Server({
 });
 
 io.on( 'connection', ( socket ) => {
-    
+
     console.log ( "someone just connected");
 
-    socket.on("create-something", ( msg) => {
+    socket.on("create-something", ( msg ) => {
         console.log ( "someone wants to create something... : " + msg );
     })
 });
