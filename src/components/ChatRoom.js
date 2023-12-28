@@ -8,22 +8,43 @@ export default function ChatRoom ( {messages, username, navigate, setMessages, i
     const [connected, setConnected] = useState( false );
     const [value, setValue] = useState("");
 
-    function handleClick( )
+    function handleSubmit( e )
     {
-        let newId = id ++;
-        setId ( newId);
-
-        let msg = value.trim();
-
+        e.preventDefault();
+        setId ( id + 1 );
+        let msg = { content : value, author : username };
         setValue ( "" );
-
         setMessages( message => [...message, msg])
         socket.emit( EVENTS["SEND_MESSAGE"] , msg);
     }
 
     useEffect( () => {
         socket.connect();
-        return setConnected( true );
+
+        function onConnect () { setConnected( true ); }
+        function onDisconnect () { setConnected( false );}
+
+        function onSendMessageEvent( value ) {
+            setMessages( prevMsgs => [...prevMsgs, value ]); 
+        }
+        
+        function onDeleteMessage( msgObj )
+        {
+            function isSpeceficMsg ( msg ) { return msgObj !== msg };
+            setMessages( (_) => [..._.filter( isSpeceficMsg )]);
+        }
+
+        socket.on( 'disconnect', onDisconnect )
+        socket.on('connect', onConnect);
+        socket.on( EVENTS["SEND_MESSAGE"], onSendMessageEvent);
+        socket.on( EVENTS["DELETE_MESSAGE"], onDeleteMessage );
+
+        return() => {
+            socket.off ( EVENTS["SEND_MESSAGE"], onSendMessageEvent);
+            socket.off ( EVENTS["DELETE_MESSAGE"], onDeleteMessage );
+            socket.off ( 'connect', onConnect );
+            socket.off( 'disconnect', onDisconnect )
+        }
     }, []);
 
     return ( 
@@ -32,12 +53,11 @@ export default function ChatRoom ( {messages, username, navigate, setMessages, i
             <h1>
                 Welcome, {username}
             </h1>
-            <input value={value} type="text" onChange={e => setValue(e.target.value)} placeholder="What do you want to say"/>
-            <button onClick={handleClick}>
-                OK
-            </button>
-
-            <ChatLog messages={messages} setMessages={setMessages} id={id} setId={setId} />
+            <form onSubmit={handleSubmit}>
+                <input value={value} type="text" onChange={e => setValue(e.target.value)} placeholder="What do you want to say"/>
+                <input type="submit" value={"OK"}/>
+            </form>
+            <ChatLog setId={setId} username={username} messages={messages} setMessages={setMessages} id={id}/>
         </>
     )
 }

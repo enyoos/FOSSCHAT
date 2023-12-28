@@ -1,9 +1,9 @@
 import { Server } from "socket.io";
 
-const URLS = ["http://localhost:3000", "http://localhost:3001"];
 
+const URLS = ["http://localhost:3000", "http://localhost:3001"];
 // those are also defined in the socket.js file.
-const EVENTS = {
+export const EVENTS = {
   "SEND_MESSAGE" : "SEND_MSG",
   "DELETE_MESSAGE": "DEL_MSG",
 }
@@ -21,12 +21,13 @@ io.on( 'connection', ( socket ) => {
 
   console.log( "incoming connection !" );
   socket.on(EVENTS["SEND_MESSAGE"], ( msg ) => {
-    console.log ( "someone just sent a message : " + msg );
+    console.log ( "someone just sent a message : " + msg.content);
     socket.broadcast.emit (EVENTS["SEND_MESSAGE"], msg);
   })
   
   socket.on( EVENTS["DELETE_MESSAGE"], ( msg ) => {
-    console.log ( "someone wants to delete msg with content : " + msg );
+    console.log ( "someone wants to delete the msg : " + msg.content + " with the author : " + msg.author );
+    socket.broadcast.emit ( EVENTS["DELETE_MESSAGE"], msg );
   })
 });
 

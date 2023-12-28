@@ -14,32 +14,7 @@ export default function App() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [fooEvents, setFooEvents] = useState([]);
-
-  // for documentation
-  // useEffect(() => {
-  //   function onConnect() {
-  //     setIsConnected(true);
-  //   }
-
-  //   function onDisconnect() {
-  //     setIsConnected(false);
-  //   }
-
-  //   function onFooEvent(value) {
-  //     setFooEvents(previous => [...previous, value]);
-  //   }
-
-  //   socket.on('connect', onConnect);
-  //   socket.on('disconnect', onDisconnect);
-  //   socket.on('foo', onFooEvent);
-
-  //   return () => {
-  //     socket.off('connect', onConnect);
-  //     socket.off('disconnect', onDisconnect);
-  //     socket.off('foo', onFooEvent);
-  //   };
-  // }, []);
-
+  
   return (
       <Routes>
         <Route path='/' element={<Join navigate={navigate} setUser={setUsername}/>}/> 
