@@ -32,14 +32,7 @@ export default function ChatRoom ( {messages, username, navigate, setMessages, i
         
         function onDeleteMessage( msgObj )
         {
-
-            function isSpeceficMsg ( msg ) { return !assertEq( msgObj, msg ) };
-            setMessages( (previousMessages) => {
-                // console.log ( "the pMsg :A "+ previousMessages);
-                // console.log ( "the msg filtered : " + previousMessages.filter( isSpeceficMsg ));
-                previousMessages.filter ( isSpeceficMsg );
-            }
-            );
+            setMessages( ( prevmsgs ) => [...prevmsgs.filter ( item => !assertEq( item, msgObj))] );
         }
 
         socket.on( 'disconnect', onDisconnect )

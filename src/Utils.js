@@ -20,3 +20,15 @@ export function assertEq ( msg1 , msg2 )
     let sameContent = msg1.content === msg2.content;
     return sameAuthor && sameContent;
 }
+
+const m1 = {
+    content : "some content",
+    author  : "some author"
+}
+
+const m2 = {
+    content : "some content",
+    author  : "some author"
+}
+
+console.log ( assertEq( m1, m2 ) );
