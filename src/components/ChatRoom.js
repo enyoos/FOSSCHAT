@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { EVENTS, socket } from "../socket";
 import { useSearchParams } from "react-router-dom";
 import ChatLog from "./ChatLog";
+import { assertEq } from "../Utils";
 
 export default function ChatRoom ( {messages, username, navigate, setMessages, id, setId} )
 {
@@ -10,17 +11,18 @@ export default function ChatRoom ( {messages, username, navigate, setMessages, i
 
     function handleSubmit( e )
     {
-        e.preventDefault();
+        e.preventDefault()
         setId ( id + 1 );
+
         let msg = { content : value, author : username };
         setValue ( "" );
         setMessages( message => [...message, msg])
+
         socket.emit( EVENTS["SEND_MESSAGE"] , msg);
     }
 
     useEffect( () => {
         socket.connect();
-
         function onConnect () { setConnected( true ); }
         function onDisconnect () { setConnected( false );}
 
@@ -30,8 +32,14 @@ export default function ChatRoom ( {messages, username, navigate, setMessages, i
         
         function onDeleteMessage( msgObj )
         {
-            function isSpeceficMsg ( msg ) { return msgObj !== msg };
-            setMessages( (_) => [..._.filter( isSpeceficMsg )]);
+
+            function isSpeceficMsg ( msg ) { return !assertEq( msgObj, msg ) };
+            setMessages( (previousMessages) => {
+                // console.log ( "the pMsg :A "+ previousMessages);
+                // console.log ( "the msg filtered : " + previousMessages.filter( isSpeceficMsg ));
+                previousMessages.filter ( isSpeceficMsg );
+            }
+            );
         }
 
         socket.on( 'disconnect', onDisconnect )

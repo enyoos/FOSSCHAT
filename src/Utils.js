@@ -11,3 +11,12 @@ export function printR ( obj )
     console.log( 'keys : ' + Object.keys ( obj ));
     console.log( 'values : ' + Object.values ( obj ) );
 }
+
+
+// takes two messages and compares its author, also its content.
+export function assertEq ( msg1 , msg2 )
+{
+    let sameAuthor = msg1.author === msg2.author;
+    let sameContent = msg1.content === msg2.content;
+    return sameAuthor && sameContent;
+}
