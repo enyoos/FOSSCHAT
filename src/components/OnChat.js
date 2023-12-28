@@ -1,7 +1,7 @@
 import { EVENTS, socket } from "../socket";
 import "./OnChat.css";
 import { useEffect, useState } from "react"
-import { maskString, printR } from "../Utils";
+import { constructSource, maskString, printR } from "../Utils";
 import ButtonShow from "./ButtonShow";
 
 export default function OnChat ( {username, setId, id, message, setMessage } )
@@ -22,6 +22,12 @@ export default function OnChat ( {username, setId, id, message, setMessage } )
         <>
             <li key={id}>
                 <span className="who">[{message.author === username ? "You" : message.author}] says: </span> {show ? message.content : maskString( message.content ) }
+                {/* MAYBE IMPLEMENT A NEW HOVER SYSTEM : SHOW BUTTON TO DISABLE ... */}
+                {message.image.length !== 0 ? <><br/><img alt={message.author + " 's image"} src={show ? constructSource(message.image) : "./public/default-no-img.png"}/></> : ""}
+                
+                {/* TODO... */}
+                {/* do I display a link to the file .... */}
+                {/*message.file !== null ? */}
                 {message.author === username ? <button onClick={handleDelete}> 🗑️ </button> : <ButtonShow setShow={setShow} show={show}/>} 
             </li>
         </>

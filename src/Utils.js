@@ -1,3 +1,9 @@
+import { Suspense } from "react";
+
+const SUPPORT_IMAGE_ENCODINGS = ["png", "jpg"];
+
+export function tob64 ( barray ) { return btoa( new Uint8Array( barray ).reduce ( ( dt, byte ) => dt + String.fromCharCode(byte), '')); }
+
 export function maskString ( str )
 {
     const length = str.length;
@@ -12,23 +18,17 @@ export function printR ( obj )
     console.log( 'values : ' + Object.values ( obj ) );
 }
 
+export function constructSource ( byteArray ) { return  "data:image/png;base64," + tob64( byteArray ); }
 
 // takes two messages and compares its author, also its content.
 export function assertEq ( msg1 , msg2 )
 {
     let sameAuthor = msg1.author === msg2.author;
     let sameContent = msg1.content === msg2.content;
-    return sameAuthor && sameContent;
+    let sameImage   = msg1.image   === msg2.image;
+    let sameFile = msg1.file   === msg2.file;
+
+    return sameAuthor && sameContent && sameFile && sameImage;
 }
 
-const m1 = {
-    content : "some content",
-    author  : "some author"
-}
-
-const m2 = {
-    content : "some content",
-    author  : "some author"
-}
-
-console.log ( assertEq( m1, m2 ) );
+export function isImage ( filename ) { return SUPPORT_IMAGE_ENCODINGS.includes( filename.slice ( -3 )); }
