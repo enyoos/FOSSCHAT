@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "redis": "^4.6.12",
     "socket.io": "^4.7.2"
   }
 }

@@ -6,7 +6,6 @@ import { assertEq, isImage } from "../Utils";
 
 export default function ChatRoom ( {messages, username, navigate, setMessages, id, setId} )
 {
-    const [connected, setConnected] = useState( false );
     const [blob, setBlob]           = useState( [] );
     const [file, setFile]           = useState( null );
     const [value, setValue] = useState("");
@@ -40,30 +39,28 @@ export default function ChatRoom ( {messages, username, navigate, setMessages, i
 
     useEffect( () => {
         socket.connect();
-        function onConnect () { setConnected( true ); }
-        function onDisconnect () { setConnected( false );}
 
         function onSendMessageEvent( value ) { setMessages( prevMsgs => [...prevMsgs, value ]); }
 
         // maybe just replace by something else right ?
         function onDeleteMessage( msgObj ) { setMessages( ( prevmsgs ) => [...prevmsgs.filter ( item => !assertEq( item, msgObj))] ); }
+        
+        // the server responds back 200 
+        function onOK ( msg ) {
 
-        socket.on( 'disconnect', onDisconnect )
-        socket.on('connect', onConnect);
+        }
+
         socket.on( EVENTS["SEND_MESSAGE"], onSendMessageEvent);
         socket.on( EVENTS["DELETE_MESSAGE"], onDeleteMessage );
 
         return() => {
             socket.off ( EVENTS["SEND_MESSAGE"], onSendMessageEvent);
             socket.off ( EVENTS["DELETE_MESSAGE"], onDeleteMessage );
-            socket.off ( 'connect', onConnect );
-            socket.off( 'disconnect', onDisconnect )
         }
     }, []);
 
     return ( 
         <>
-            {connected ? <span> you're now connected </span> : <span> Connecting ...  </span> }
             <h1>
                 Welcome, {username}
             </h1>
