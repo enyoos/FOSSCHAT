@@ -1,0 +1,7 @@
+.container
+{
+    /* set the w,h with percent ? */
+    width: 300px;
+    height: 100px;
+    object-fit: contain;
+}
