@@ -21,19 +21,15 @@ export default function ChatRoom ( {messages, username, navigate, setMessages, i
             let byteArray = new Int8Array( buffer );
             setBlob(Array.prototype.slice.call(byteArray));
         }
-        else 
-        {
-            // how can we render this file on the UI?
-            setFile ( e.target.files[0] );
-        }
-
+        else { setFile ( e.target.files[0] ); }
+        
    }
 
     function handleSubmit( e )
     {
         e.preventDefault()
-        setId ( id + 1 );
 
+        setId ( id + 1 );
         let msg = { content : value, author : username, image : blob, file : file};
 
         setValue ( "" );
@@ -74,7 +70,6 @@ export default function ChatRoom ( {messages, username, navigate, setMessages, i
             <form onSubmit={handleSubmit}>
                 <input value={value} type="text" onChange={e => setValue(e.target.value)} placeholder="What do you want to say"/>
                 <input type="file" onChange={e => handleUpload( e )}/>
-                <input type="submit" value={"OK"}/>
             </form>
             <ChatLog setId={setId} username={username} messages={messages} setMessages={setMessages} id={id}/>
         </>

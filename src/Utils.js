@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-const SUPPORT_IMAGE_ENCODINGS = ["png", "jpg"];
+const SUPPORT_IMAGE_ENCODINGS = ["png", "jpg", "gif"];
 
 export function tob64 ( barray ) { return btoa( new Uint8Array( barray ).reduce ( ( dt, byte ) => dt + String.fromCharCode(byte), '')); }
 
@@ -25,10 +25,18 @@ export function assertEq ( msg1 , msg2 )
 {
     let sameAuthor = msg1.author === msg2.author;
     let sameContent = msg1.content === msg2.content;
-    let sameImage   = msg1.image   === msg2.image;
+    let sameImage   = /*msg1.image   === msg2.image;*/ assertEqArr( msg1.image, msg2.image );
     let sameFile = msg1.file   === msg2.file;
-
     return sameAuthor && sameContent && sameFile && sameImage;
+}
+
+export function assertEqArr ( arr1, arr2 )
+{
+    let str1 = "";
+    let str2 = "";
+    for ( let element in arr1 ) { str1 += element; }
+    for ( let element in arr2 ) { str2 += element; }
+    return str1 === str2;
 }
 
 export function isImage ( filename ) { return SUPPORT_IMAGE_ENCODINGS.includes( filename.slice ( -3 )); }
